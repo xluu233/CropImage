@@ -27,9 +27,9 @@ import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
+
     // 申请相机权限的requestCode
     private val PERMISSION_CAMERA_REQUEST_CODE = 0x00000012
-
     //用于保存拍照图片的uri
     private var mCameraUri: Uri? = null
     // 用于保存图片的文件路径，Android 10以下使用图片路径访问图片
@@ -46,6 +46,9 @@ class MainActivity : AppCompatActivity() {
         button.setOnClickListener(){
             checkPermissionAndCamera()
         }
+
+
+        //这里使用了第三方库进行裁剪，如果不想要可以不用，直接处理返回的bitmap或者Uri
         button2.setOnClickListener(){
             if (crop_imageview.canRightCrop()) {
                 bitmap = crop_imageview.crop()
@@ -176,7 +179,9 @@ class MainActivity : AppCompatActivity() {
                     // 使用图片路径加载
                     bitmap = BitmapFactory.decodeFile(mCameraImagePath)
                 }
+                //这里使用了第三方库进行裁剪，如果不想要可以不用
                 crop_imageview.setImageToCrop(bitmap)
+                crop_imageview.setAutoScanEnable(false)
             } else {
                 Toast.makeText(this, "取消", Toast.LENGTH_LONG).show()
             }
