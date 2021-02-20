@@ -1,16 +1,19 @@
 package com.xlu.cropimage
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Point
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.Toast
 import androidx.annotation.Nullable
 import androidx.appcompat.app.AppCompatActivity
@@ -19,7 +22,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.os.EnvironmentCompat
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_main2.*
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -39,23 +41,35 @@ class MainActivity : AppCompatActivity() {
 
     var bitmap: Bitmap? = null
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        //选择照片，直接打开相机无需请求权限
         button.setOnClickListener(){
-            checkPermissionAndCamera()
+            //checkPermissionAndCamera()
+            openCamera()
         }
 
-
-        //这里使用了第三方库进行裁剪，如果不想要可以不用，直接处理返回的bitmap或者Uri
+        //获取坐标点
         button2.setOnClickListener(){
             if (crop_imageview.canRightCrop()) {
-                bitmap = crop_imageview.crop()
-                crop_imageview.setImageBitmap(bitmap)
+                text.text = ""
+                val mCropPoints: Array<Point> = crop_imageview.cropPoints
+                mCropPoints.forEach {
+                    Log.d("Point:","---x:${it.x}---y:${it.y}")
+                    text.text = "${text.text}            Point:  ---x:${it.x}---y:${it.y}"
+                }
+
             } else {
                 Toast.makeText(this, "cannot crop correctly", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        //裁剪
+        button3.setOnClickListener {
+
         }
 
     }
@@ -179,14 +193,14 @@ class MainActivity : AppCompatActivity() {
                     // 使用图片路径加载
                     bitmap = BitmapFactory.decodeFile(mCameraImagePath)
                 }
-                //这里使用了第三方库进行裁剪，如果不想要可以不用
                 crop_imageview.setImageToCrop(bitmap)
-                crop_imageview.setAutoScanEnable(false)
             } else {
                 Toast.makeText(this, "取消", Toast.LENGTH_LONG).show()
             }
         }
 
     }
+
+
 
 }

@@ -6,4 +6,6 @@
 
     <color name="text">#00000000</color>
 
+    <color name="tip_audio_color">#43CAD5</color>
+
 </resources>
